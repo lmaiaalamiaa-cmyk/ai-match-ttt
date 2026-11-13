@@ -1,0 +1,14 @@
+workflows:
+  android-debug:
+    name: AI MATCH PRO Android APK
+    max_build_duration: 60
+    environment:
+      java: 17
+    scripts:
+      - name: Build debug APK
+        script: |
+          gradle wrapper --gradle-version 8.9
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug
+    artifacts:
+      - app/build/outputs/apk/debug/*.apk

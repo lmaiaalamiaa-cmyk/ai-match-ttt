@@ -1,0 +1,1 @@
+إذا لم يكن gradlew موجوداً بعد رفع الملفات: افتح المشروع في Android Studio ثم Terminal ونفّذ: gradle wrapper --gradle-version 8.9
