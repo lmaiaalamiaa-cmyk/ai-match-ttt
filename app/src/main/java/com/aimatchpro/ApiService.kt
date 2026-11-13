@@ -5,8 +5,9 @@ import retrofit2.http.Query
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.Interceptor
 
+// حط الكي ديالك هنا بين " "
 const val API_KEY = "a5da94fc-d777-4a5b-a8fb-facd1c42395c"
 
 data class FixtureResponse(val response: List<FixtureData>)
@@ -26,15 +27,18 @@ interface ApiService {
     suspend fun getLiveMatches(): FixtureResponse
 
     @GET("fixtures")
-    suspend fun getTodayMatches(
-        @Query("date") date: String
-    ): FixtureResponse
+    suspend fun getTodayMatches(@Query("date") date: String): FixtureResponse
 }
 
 object ApiClient {
     val api: ApiService by lazy {
-        val logging = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC }
-        val client = OkHttpClient.Builder().addInterceptor(logging).build()
+        val authInterceptor = Interceptor { chain ->
+            val request = chain.request().newBuilder()
+                .addHeader("x-apisports-key", API_KEY)
+                .build()
+            chain.proceed(request)
+        }
+        val client = OkHttpClient.Builder().addInterceptor(authInterceptor).build()
         Retrofit.Builder()
             .baseUrl("https://v3.football.api-sports.io/")
             .client(client)
